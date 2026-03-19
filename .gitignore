@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Database
+*.db
+*.sqlite
+
+# Secrets - NEVER commit these!
+serviceAccountKey.json
+.env
+
+# Fix scripts (not needed in production)
+fix_*.py
+
+# OS
+.DS_Store
+Thumbs.db
