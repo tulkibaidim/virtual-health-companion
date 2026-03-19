@@ -41,6 +41,11 @@ SYSTEM_PROMPT = (
 app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_KEY
 
+# Initialize database on startup (works with gunicorn too)
+with app.app_context():
+    init_db()
+    init_firebase()
+
 
 # ── CORS (manual, no flask-cors needed) ─────────────────────────────────────
 @app.after_request
