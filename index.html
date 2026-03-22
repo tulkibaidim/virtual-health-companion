@@ -260,6 +260,34 @@ button,input,select,textarea{font-family:inherit;}
   .form-grid2{grid-template-columns:1fr;}
 }
 @keyframes fadeIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+@keyframes sosPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,68,68,0.4);}50%{box-shadow:0 0 0 20px rgba(255,68,68,0);}}
+.symptom-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 12px;color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;text-align:left;}
+.symptom-btn:hover{background:rgba(108,99,255,0.2);border-color:rgba(108,99,255,0.4);color:white;}
+.symptom-btn.selected{background:linear-gradient(135deg,rgba(108,99,255,0.4),rgba(255,101,132,0.2));border-color:#6C63FF;color:white;font-weight:600;}
+.bmi-unit-btn{padding:8px 20px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.6);font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;}
+.bmi-unit-btn.active{background:linear-gradient(135deg,#6C63FF,#9C27B0);border-color:transparent;color:white;font-weight:700;}
+.btn-danger{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 20px;border-radius:12px;background:linear-gradient(135deg,#FF4444,#CC0000);color:white;font-size:14px;font-weight:700;border:none;cursor:pointer;transition:opacity .15s;}
+.btn-danger:hover{opacity:.85;}
+.emg-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.emg-row:last-child{border-bottom:none;}
+.emg-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.emg-info{flex:1;}
+.emg-name{font-size:13px;font-weight:600;color:white;}
+.emg-num{font-size:12px;color:rgba(255,255,255,0.5);}
+.emg-call{padding:7px 16px;border-radius:8px;background:linear-gradient(135deg,#FF4444,#CC0000);color:white;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;transition:opacity .15s;}
+.emg-call:hover{opacity:.8;}
+.firstaid-item{padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.06);cursor:pointer;}
+.firstaid-hdr{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:white;}
+.firstaid-hdr span{font-size:18px;}
+.emg-contact-card{display:flex;align-items:center;gap:12px;padding:12px;background:rgba(255,255,255,0.04);border-radius:12px;margin-bottom:8px;}
+.emg-contact-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#6C63FF,#FF6584);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:white;flex-shrink:0;}
+.emg-contact-info{flex:1;}
+.emg-contact-name{font-size:13px;font-weight:600;color:white;}
+.emg-contact-phone{font-size:12px;color:rgba(255,255,255,0.5);}
+.emg-contact-btns{display:flex;gap:6px;}
+.emg-cta,.emg-cdel{padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;}
+.emg-cta{background:rgba(108,99,255,0.3);color:#6C63FF;}
+.emg-cdel{background:rgba(255,68,68,0.15);color:#FF4444;}
 </style>
 </head>
 <body>
@@ -381,6 +409,9 @@ button,input,select,textarea{font-family:inherit;}
       <button class="nav-link" onclick="showPage('healthdata',this)">Health Data</button>
       <button class="nav-link" onclick="showPage('companion',this)">AI Chat</button>
       <button class="nav-link" onclick="showPage('reports',this)">Reports</button>
+      <button class="nav-link" onclick="showPage('symptoms',this)">Symptom Checker</button>
+      <button class="nav-link" onclick="showPage('bmi',this)">BMI</button>
+      <button class="nav-link" onclick="showPage('emergency',this)">Emergency</button>
       <button class="nav-link" onclick="showPage('settings',this)">Settings</button>
     </div>
     <div class="nav-right">
@@ -399,6 +430,10 @@ button,input,select,textarea{font-family:inherit;}
     <div class="sidebar-section">Tools</div>
     <button class="sidebar-item" onclick="showPage('companion',this)"><span>&#x1F916;</span>&nbsp;AI Companion</button>
     <button class="sidebar-item" onclick="showPage('reports',this)"><span>&#x1F4CB;</span>&nbsp;Reports</button>
+    <div class="sidebar-section">Health Tools</div>
+    <button class="sidebar-item" onclick="showPage('symptoms',this)"><span>🩺</span>&nbsp;Symptom Checker</button>
+    <button class="sidebar-item" onclick="showPage('bmi',this)"><span>⚖️</span>&nbsp;BMI Calculator</button>
+    <button class="sidebar-item" onclick="showPage('emergency',this)"><span>🚨</span>&nbsp;Emergency SOS</button>
     <div class="sidebar-section">Account</div>
     <button class="sidebar-item" onclick="showPage('settings',this)"><span>&#x2699;</span>&nbsp;Settings</button>
     <button class="sidebar-item" onclick="signOut()"><span>&#x1F6AA;</span>&nbsp;Logout</button>
@@ -581,6 +616,249 @@ button,input,select,textarea{font-family:inherit;}
 
   </div>
 
+
+    <!-- SYMPTOM CHECKER PAGE -->
+    <div class="page" id="page-symptoms">
+      <div class="page-header">
+        <div class="page-h1">🩺 Symptom Checker</div>
+        <div class="page-sub">Describe your symptoms and get AI-powered health insights</div>
+      </div>
+      <div class="settings-layout">
+        <div>
+          <div class="card mb18">
+            <div class="card-title">Select Your Symptoms</div>
+            <div id="symptomGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:18px;">
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Headache')">🤕 Headache</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Fever')">🌡️ Fever</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Cough')">😮‍💨 Cough</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Fatigue')">😴 Fatigue</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Nausea')">🤢 Nausea</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Chest Pain')">💔 Chest Pain</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Shortness of Breath')">🫁 Shortness of Breath</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Dizziness')">💫 Dizziness</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Sore Throat')">😣 Sore Throat</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Back Pain')">🦴 Back Pain</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Joint Pain')">🦵 Joint Pain</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Stomach Ache')">🫀 Stomach Ache</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Runny Nose')">👃 Runny Nose</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Skin Rash')">🩹 Skin Rash</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Insomnia')">🌙 Insomnia</button>
+              <button class="symptom-btn" onclick="toggleSymptom(this,'Anxiety')">😰 Anxiety</button>
+            </div>
+            <div class="form-grid2" style="margin-bottom:14px;">
+              <div class="form-group">
+                <label class="form-label">Duration</label>
+                <select class="form-select" id="symptomDuration">
+                  <option>Less than 1 day</option>
+                  <option>1-3 days</option>
+                  <option>3-7 days</option>
+                  <option>1-2 weeks</option>
+                  <option>More than 2 weeks</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Severity (1-10)</label>
+                <input class="form-input" id="symptomSeverity" type="range" min="1" max="10" value="5" oninput="document.getElementById('sevVal').textContent=this.value" style="padding:10px 0;">
+                <div style="text-align:center;color:#6C63FF;font-weight:700;font-size:18px;" id="sevVal">5</div>
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:16px;">
+              <label class="form-label">Additional Details (optional)</label>
+              <textarea class="form-input" id="symptomDetails" rows="2" placeholder="Describe when symptoms started, any triggers, medications you're taking..." style="resize:vertical;"></textarea>
+            </div>
+            <div id="selectedSymptomsList" style="display:none;margin-bottom:14px;">
+              <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:6px;">Selected:</div>
+              <div id="selectedSymptomsText" style="color:#6C63FF;font-weight:600;font-size:13px;"></div>
+            </div>
+            <button class="btn-primary" onclick="analyzeSymptoms()" id="analyzeBtn" style="width:100%;justify-content:center;">Analyze Symptoms</button>
+          </div>
+        </div>
+        <div>
+          <div class="card" id="symptomResultCard" style="display:none;">
+            <div class="card-title">AI Analysis</div>
+            <div id="symptomResult" style="line-height:1.75;font-size:14px;color:rgba(255,255,255,0.85);"></div>
+          </div>
+          <div class="card disc-card" style="margin-top:0;">
+            <div class="disc-title">⚠️ Medical Disclaimer</div>
+            <div class="disc-text">This AI provides general health information only and is NOT a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for medical concerns.</div>
+          </div>
+          <div class="card" style="margin-top:16px;text-align:center;padding:20px;">
+            <div style="font-size:32px;margin-bottom:10px;">🚨</div>
+            <div style="font-weight:700;color:white;margin-bottom:6px;">Emergency?</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:14px;">If you have chest pain, difficulty breathing, or severe symptoms — call emergency services immediately.</div>
+            <button class="btn-danger" onclick="showPage('emergency',null)" style="width:100%;justify-content:center;">Go to Emergency SOS</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BMI CALCULATOR PAGE -->
+    <div class="page" id="page-bmi">
+      <div class="page-header">
+        <div class="page-h1">⚖️ BMI Calculator</div>
+        <div class="page-sub">Calculate your Body Mass Index and get personalized health tips</div>
+      </div>
+      <div class="settings-layout">
+        <div>
+          <div class="card mb18">
+            <div class="card-title">Your Measurements</div>
+            <div style="display:flex;gap:12px;margin-bottom:14px;">
+              <button class="bmi-unit-btn active" id="btnMetric" onclick="setBmiUnit('metric')">Metric (cm/kg)</button>
+              <button class="bmi-unit-btn" id="btnImperial" onclick="setBmiUnit('imperial')">Imperial (ft/lbs)</button>
+            </div>
+            <div id="metricInputs">
+              <div class="form-grid2">
+                <div class="form-group">
+                  <label class="form-label">Height (cm)</label>
+                  <input class="form-input" id="bmiHeightCm" type="number" placeholder="e.g. 175" min="50" max="250" oninput="calcBMI()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Weight (kg)</label>
+                  <input class="form-input" id="bmiWeightKg" type="number" placeholder="e.g. 70" min="20" max="300" oninput="calcBMI()">
+                </div>
+              </div>
+            </div>
+            <div id="imperialInputs" style="display:none;">
+              <div class="form-grid2">
+                <div class="form-group">
+                  <label class="form-label">Height (ft)</label>
+                  <input class="form-input" id="bmiHeightFt" type="number" placeholder="e.g. 5" min="1" max="8" oninput="calcBMI()">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Height (in)</label>
+                  <input class="form-input" id="bmiHeightIn" type="number" placeholder="e.g. 9" min="0" max="11" oninput="calcBMI()">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Weight (lbs)</label>
+                <input class="form-input" id="bmiWeightLbs" type="number" placeholder="e.g. 154" min="44" max="660" oninput="calcBMI()">
+              </div>
+            </div>
+            <div class="form-grid2">
+              <div class="form-group">
+                <label class="form-label">Age</label>
+                <input class="form-input" id="bmiAge" type="number" placeholder="e.g. 30" min="2" max="120" oninput="calcBMI()">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Gender</label>
+                <select class="form-select" id="bmiGender" onchange="calcBMI()">
+                  <option value="">Select</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="card" id="bmiResultCard" style="display:none;">
+            <div class="card-title">Your BMI Result</div>
+            <div style="text-align:center;padding:20px 0;">
+              <div style="font-size:64px;font-weight:800;background:linear-gradient(135deg,#6C63FF,#FF6584);-webkit-background-clip:text;-webkit-text-fill-color:transparent;" id="bmiNumber">--</div>
+              <div style="font-size:20px;font-weight:700;color:white;margin:8px 0;" id="bmiCategory">--</div>
+              <div style="font-size:13px;color:rgba(255,255,255,0.6);" id="bmiSubtext"></div>
+            </div>
+            <div id="bmiBar" style="height:14px;border-radius:10px;background:linear-gradient(to right,#4CAF50,#8BC34A,#FFD54F,#FF9800,#FF5722);position:relative;margin:10px 0 6px;">
+              <div id="bmiMarker" style="position:absolute;top:-4px;width:22px;height:22px;background:white;border-radius:50%;border:3px solid #6C63FF;transform:translateX(-50%);box-shadow:0 2px 8px rgba(0,0,0,.4);transition:left .5s;left:0;"></div>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:16px;">
+              <span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="card mb16" id="bmiTipsCard" style="display:none;">
+            <div class="card-title">Personalized Tips</div>
+            <div id="bmiTips" style="line-height:1.75;font-size:14px;color:rgba(255,255,255,0.85);"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">BMI Categories</div>
+            <div style="font-size:13px;">
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+                <div style="width:12px;height:12px;border-radius:50%;background:#4CAF50;flex-shrink:0;"></div>
+                <div><strong style="color:white;">Under 18.5</strong> <span style="color:rgba(255,255,255,0.5);">— Underweight</span></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+                <div style="width:12px;height:12px;border-radius:50%;background:#8BC34A;flex-shrink:0;"></div>
+                <div><strong style="color:white;">18.5 – 24.9</strong> <span style="color:rgba(255,255,255,0.5);">— Normal weight</span></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+                <div style="width:12px;height:12px;border-radius:50%;background:#FF9800;flex-shrink:0;"></div>
+                <div><strong style="color:white;">25.0 – 29.9</strong> <span style="color:rgba(255,255,255,0.5);">— Overweight</span></div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:8px 0;">
+                <div style="width:12px;height:12px;border-radius:50%;background:#FF5722;flex-shrink:0;"></div>
+                <div><strong style="color:white;">30.0 and above</strong> <span style="color:rgba(255,255,255,0.5);">— Obese</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMERGENCY SOS PAGE -->
+    <div class="page" id="page-emergency">
+      <div class="page-header">
+        <div class="page-h1">🚨 Emergency SOS</div>
+        <div class="page-sub">Quick access to emergency services and contacts</div>
+      </div>
+      <div class="settings-layout">
+        <div>
+          <!-- SOS Button -->
+          <div class="card mb18" style="text-align:center;padding:30px 20px;">
+            <div style="font-size:18px;font-weight:700;color:white;margin-bottom:6px;">Emergency Services</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:24px;">Tap to call emergency services in your region</div>
+            <button id="sosBtn" onclick="triggerSOS()" style="width:140px;height:140px;border-radius:50%;background:linear-gradient(135deg,#FF4444,#CC0000);border:4px solid rgba(255,68,68,0.4);color:white;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 0 0 0 rgba(255,68,68,0.4);animation:sosPulse 2s infinite;letter-spacing:1px;">
+              SOS<br><span style="font-size:28px;">🆘</span>
+            </button>
+            <div style="margin-top:20px;font-size:12px;color:rgba(255,255,255,0.4);">Hold for 3 seconds to activate</div>
+          </div>
+
+          <!-- Emergency Numbers -->
+          <div class="card mb18">
+            <div class="card-title">Emergency Numbers</div>
+            <div id="emergencyNumbers">
+              <div class="emg-row"><div class="emg-icon" style="background:linear-gradient(135deg,#FF4444,#CC0000);">🚑</div><div class="emg-info"><div class="emg-name">Ambulance</div><div class="emg-num">103</div></div><a href="tel:103" class="emg-call">Call</a></div>
+              <div class="emg-row"><div class="emg-icon" style="background:linear-gradient(135deg,#FF6B35,#E85D04);">🚒</div><div class="emg-info"><div class="emg-name">Fire Department</div><div class="emg-num">101</div></div><a href="tel:101" class="emg-call">Call</a></div>
+              <div class="emg-row"><div class="emg-icon" style="background:linear-gradient(135deg,#4361EE,#3A0CA3);">👮</div><div class="emg-info"><div class="emg-name">Police</div><div class="emg-num">102</div></div><a href="tel:102" class="emg-call">Call</a></div>
+              <div class="emg-row"><div class="emg-icon" style="background:linear-gradient(135deg,#7209B7,#560BAD);">🏥</div><div class="emg-info"><div class="emg-name">Emergency (Unified)</div><div class="emg-num">112</div></div><a href="tel:112" class="emg-call">Call</a></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <!-- Emergency Contacts -->
+          <div class="card mb16">
+            <div class="card-title" style="margin-bottom:14px;">Personal Emergency Contacts</div>
+            <div id="emergencyContacts">
+              <div class="emg-contact-empty" id="noContactsMsg" style="text-align:center;padding:20px;color:rgba(255,255,255,0.4);font-size:13px;">No emergency contacts added yet.<br>Add your first contact below.</div>
+            </div>
+            <button class="btn-primary" onclick="showAddContactModal()" style="width:100%;justify-content:center;margin-top:12px;">+ Add Contact</button>
+          </div>
+
+          <!-- First Aid Tips -->
+          <div class="card">
+            <div class="card-title">Quick First Aid Tips</div>
+            <div style="font-size:13px;">
+              <div class="firstaid-item" onclick="toggleFirstAid(this)">
+                <div class="firstaid-hdr"><span>❤️</span> CPR Steps</div>
+                <div class="firstaid-body" style="display:none;color:rgba(255,255,255,0.75);padding-top:10px;line-height:1.7;">1. Call emergency services<br>2. Place hands on center of chest<br>3. Push hard and fast (100-120 compressions/min)<br>4. Give 2 rescue breaths every 30 compressions<br>5. Continue until help arrives</div>
+              </div>
+              <div class="firstaid-item" onclick="toggleFirstAid(this)">
+                <div class="firstaid-hdr"><span>🩸</span> Bleeding Control</div>
+                <div class="firstaid-body" style="display:none;color:rgba(255,255,255,0.75);padding-top:10px;line-height:1.7;">1. Apply direct pressure with clean cloth<br>2. Keep pressing for at least 10 minutes<br>3. Elevate the injured area if possible<br>4. Do not remove the cloth — add more on top<br>5. Call emergency if bleeding is severe</div>
+              </div>
+              <div class="firstaid-item" onclick="toggleFirstAid(this)">
+                <div class="firstaid-hdr"><span>🔥</span> Burns Treatment</div>
+                <div class="firstaid-body" style="display:none;color:rgba(255,255,255,0.75);padding-top:10px;line-height:1.7;">1. Cool under running water for 10-20 min<br>2. Do NOT use ice or butter<br>3. Cover loosely with sterile bandage<br>4. Take painkillers if needed<br>5. Seek medical help for large/deep burns</div>
+              </div>
+              <div class="firstaid-item" onclick="toggleFirstAid(this)" style="border-bottom:none;">
+                <div class="firstaid-hdr"><span>🫀</span> Heart Attack Signs</div>
+                <div class="firstaid-body" style="display:none;color:rgba(255,255,255,0.75);padding-top:10px;line-height:1.7;">Signs: Chest pain, arm/jaw pain, shortness of breath, sweating, nausea<br><br>Actions:<br>1. Call 103 or 112 immediately<br>2. Have person sit/lie down comfortably<br>3. Loosen tight clothing<br>4. If trained, begin CPR if needed</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   <nav class="bottom-nav">
     <div class="bottom-nav-items">
       <button class="bn-item active" onclick="showPage('dashboard',this)"><span class="bn-icon">[D]</span>Dashboard</button>
@@ -747,7 +1025,7 @@ function showPage(id,btn) {
   var pg=document.getElementById('page-'+id);
   if(pg)pg.classList.add('active');
   if(btn)btn.classList.add('active');
-  var loaders={dashboard:loadDashboard,devices:loadDevices,healthdata:function(){loadHealthData();renderCal();},companion:loadChat,reports:loadReports,settings:loadSettings};
+  var loaders={dashboard:loadDashboard,devices:loadDevices,healthdata:function(){loadHealthData();renderCal();},companion:loadChat,reports:loadReports,settings:loadSettings,emergency:renderEmergencyContacts};
   if(loaders[id])loaders[id]();
 }
 
@@ -900,7 +1178,219 @@ document.addEventListener('DOMContentLoaded',function(){
   hdPeriodBtns.forEach(function(btn,i){if(periods[i])btn.onclick=function(){switchPeriod(periods[i],btn,'hd');};});
 });
 
-function showSetupGuide(){
+
+// ===== SYMPTOM CHECKER =====
+var selectedSymptoms = [];
+function toggleSymptom(btn, name) {
+  var idx = selectedSymptoms.indexOf(name);
+  if (idx === -1) { selectedSymptoms.push(name); btn.classList.add('selected'); }
+  else { selectedSymptoms.splice(idx, 1); btn.classList.remove('selected'); }
+  var wrap = document.getElementById('selectedSymptomsList');
+  var txt = document.getElementById('selectedSymptomsText');
+  if (selectedSymptoms.length > 0) {
+    wrap.style.display = 'block';
+    txt.textContent = selectedSymptoms.join(', ');
+  } else { wrap.style.display = 'none'; }
+}
+
+async function analyzeSymptoms() {
+  if (selectedSymptoms.length === 0) { toast('Please select at least one symptom', 'error'); return; }
+  var duration = document.getElementById('symptomDuration').value;
+  var severity = document.getElementById('symptomSeverity').value;
+  var details = document.getElementById('symptomDetails').value.trim();
+  var btn = document.getElementById('analyzeBtn');
+  btn.textContent = 'Analyzing...';
+  btn.disabled = true;
+  var resultCard = document.getElementById('symptomResultCard');
+  var resultEl = document.getElementById('symptomResult');
+  resultCard.style.display = 'block';
+  resultEl.innerHTML = '<div style="color:rgba(255,255,255,0.5);font-style:italic;">AI is analyzing your symptoms...</div>';
+  var prompt = 'I have the following symptoms: ' + selectedSymptoms.join(', ') + '. Duration: ' + duration + '. Severity: ' + severity + '/10.' + (details ? ' Additional info: ' + details : '') + ' Please provide: 1) Possible conditions these symptoms may indicate, 2) Immediate steps I should take, 3) Whether I should seek medical attention urgently. Keep response concise and practical. Add disclaimer at end.';
+  try {
+    var response;
+    if (AUTH_TOKEN) {
+      response = await api('POST', '/chat/send', { message: prompt });
+      resultEl.innerHTML = formatAIResponse(response.reply || response.response || 'Unable to analyze symptoms.');
+    } else {
+      // Fallback analysis
+      var analysis = generateLocalSymptomAnalysis(selectedSymptoms, severity);
+      resultEl.innerHTML = formatAIResponse(analysis);
+    }
+  } catch(e) {
+    var analysis = generateLocalSymptomAnalysis(selectedSymptoms, severity);
+    resultEl.innerHTML = formatAIResponse(analysis);
+  }
+  btn.textContent = 'Analyze Symptoms';
+  btn.disabled = false;
+}
+
+function generateLocalSymptomAnalysis(symptoms, severity) {
+  var serious = symptoms.some(function(s) { return ['Chest Pain','Shortness of Breath','Dizziness'].includes(s); });
+  var resp = '**Symptom Analysis**\n\nYou reported: ' + symptoms.join(', ') + ' with severity ' + severity + '/10.\n\n';
+  if (serious) {
+    resp += '⚠️ **URGENT:** Some of your symptoms (especially ' + symptoms.filter(function(s){return ['Chest Pain','Shortness of Breath'].includes(s);}).join(', ') + ') may indicate a serious condition. **Please seek medical attention immediately or call emergency services.**\n\n';
+  }
+  resp += '**General Recommendations:**\n• Rest and stay hydrated\n• Monitor your temperature if feverish\n• Avoid strenuous activity\n\n';
+  if (parseInt(severity) >= 7) { resp += '**Given the high severity, we recommend consulting a doctor today.**\n\n'; }
+  resp += '*Disclaimer: This is not medical advice. Always consult a qualified healthcare professional for proper diagnosis and treatment.*';
+  return resp;
+}
+
+function formatAIResponse(text) {
+  return text.replace(/\*\*(.*?)\*\*/g, '<strong style="color:#6C63FF;">$1</strong>').replace(/\n/g, '<br>');
+}
+
+// ===== BMI CALCULATOR =====
+var bmiUnit = 'metric';
+function setBmiUnit(unit) {
+  bmiUnit = unit;
+  document.getElementById('metricInputs').style.display = unit === 'metric' ? 'block' : 'none';
+  document.getElementById('imperialInputs').style.display = unit === 'imperial' ? 'block' : 'none';
+  document.getElementById('btnMetric').classList.toggle('active', unit === 'metric');
+  document.getElementById('btnImperial').classList.toggle('active', unit === 'imperial');
+  calcBMI();
+}
+
+function calcBMI() {
+  var heightM, weightKg;
+  if (bmiUnit === 'metric') {
+    var hcm = parseFloat(document.getElementById('bmiHeightCm').value);
+    var wkg = parseFloat(document.getElementById('bmiWeightKg').value);
+    if (!hcm || !wkg || hcm < 50 || wkg < 10) return;
+    heightM = hcm / 100;
+    weightKg = wkg;
+  } else {
+    var ft = parseFloat(document.getElementById('bmiHeightFt').value) || 0;
+    var inch = parseFloat(document.getElementById('bmiHeightIn').value) || 0;
+    var lbs = parseFloat(document.getElementById('bmiWeightLbs').value);
+    if (!lbs || (ft === 0 && inch === 0)) return;
+    heightM = ((ft * 12) + inch) * 0.0254;
+    weightKg = lbs * 0.453592;
+  }
+  var bmi = weightKg / (heightM * heightM);
+  var age = parseInt(document.getElementById('bmiAge').value) || 0;
+  var gender = document.getElementById('bmiGender').value;
+  showBMIResult(bmi, age, gender);
+}
+
+function showBMIResult(bmi, age, gender) {
+  var card = document.getElementById('bmiResultCard');
+  var tipsCard = document.getElementById('bmiTipsCard');
+  card.style.display = 'block';
+  tipsCard.style.display = 'block';
+  var bmiNum = document.getElementById('bmiNumber');
+  var bmiCat = document.getElementById('bmiCategory');
+  var bmiSub = document.getElementById('bmiSubtext');
+  var bmiTips = document.getElementById('bmiTips');
+  var marker = document.getElementById('bmiMarker');
+  bmiNum.textContent = bmi.toFixed(1);
+  var cat, color, tips, pct;
+  if (bmi < 18.5) {
+    cat = 'Underweight'; color = '#4CAF50'; pct = Math.max(2, (bmi/18.5)*25);
+    tips = '• Increase calorie intake with nutritious foods<br>• Include protein-rich foods (eggs, chicken, legumes)<br>• Strength training helps build healthy muscle mass<br>• Consult a doctor to rule out underlying conditions<br>• Eat 5-6 smaller meals throughout the day';
+  } else if (bmi < 25) {
+    cat = 'Normal Weight'; color = '#8BC34A'; pct = 25 + ((bmi-18.5)/6.5)*25;
+    tips = '✅ Great job! Your BMI is in the healthy range.<br><br>• Maintain your balanced diet<br>• Continue regular physical activity (150 min/week)<br>• Stay hydrated (8 glasses of water daily)<br>• Get regular health check-ups<br>• Prioritize sleep and stress management';
+  } else if (bmi < 30) {
+    cat = 'Overweight'; color = '#FF9800'; pct = 50 + ((bmi-25)/5)*25;
+    tips = '• Reduce portion sizes gradually<br>• Aim for 30+ minutes of moderate exercise daily<br>• Cut back on processed foods and sugary drinks<br>• Add more vegetables and whole grains to your diet<br>• Consider consulting a nutritionist for a meal plan';
+  } else {
+    cat = 'Obese'; color = '#FF5722'; pct = Math.min(98, 75 + ((bmi-30)/10)*25);
+    tips = '• Consult your doctor for a personalized weight loss plan<br>• Start with low-impact exercises (walking, swimming)<br>• Track your food intake to be mindful of calories<br>• Set small, achievable goals (0.5-1 kg/week)<br>• Consider joining a support group or working with a dietitian';
+  }
+  bmiCat.textContent = cat;
+  bmiCat.style.color = color;
+  bmiSub.textContent = 'BMI: ' + bmi.toFixed(1) + (age ? ' | Age: ' + age : '') + (gender ? ' | ' + capitalize(gender) : '');
+  marker.style.left = pct + '%';
+  bmiTips.innerHTML = '<div style="font-weight:700;color:' + color + ';margin-bottom:10px;">' + cat + ' Range Tips:</div>' + tips;
+}
+
+// ===== EMERGENCY SOS =====
+var sosTimer = null;
+var sosHoldStart = null;
+var emergencyContacts = [];
+try { emergencyContacts = JSON.parse(localStorage.getItem('vhc_emergency_contacts') || '[]'); } catch {}
+
+function triggerSOS() {
+  var btn = document.getElementById('sosBtn');
+  if (!sosHoldStart) {
+    sosHoldStart = Date.now();
+    btn.style.background = 'linear-gradient(135deg,#FF0000,#990000)';
+    btn.innerHTML = 'HOLD...<br><span style="font-size:28px;">🆘</span>';
+    sosTimer = setTimeout(function() {
+      sosHoldStart = null;
+      btn.style.background = 'linear-gradient(135deg,#FF4444,#CC0000)';
+      btn.innerHTML = 'SOS<br><span style="font-size:28px;">🆘</span>';
+      showModal('🚨 Emergency SOS Activated', '<div style="text-align:center;padding:20px 0;"><div style="font-size:48px;margin-bottom:12px;">🆘</div><div style="font-size:15px;font-weight:700;color:white;margin-bottom:8px;">Calling Emergency Services</div><div style="font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:24px;">Dialing 112 (Emergency)</div><div style="display:flex;gap:10px;justify-content:center;"><a href="tel:112" class="btn-danger" style="text-decoration:none;">Call 112 Now</a><button class="btn-sec" onclick="closeModal()">Cancel</button></div></div>');
+    }, 3000);
+  }
+}
+
+document.addEventListener('mouseup', function() {
+  if (sosTimer) { clearTimeout(sosTimer); sosTimer = null; }
+  if (sosHoldStart) {
+    sosHoldStart = null;
+    var btn = document.getElementById('sosBtn');
+    if (btn) { btn.style.background = 'linear-gradient(135deg,#FF4444,#CC0000)'; btn.innerHTML = 'SOS<br><span style="font-size:28px;">🆘</span>'; }
+  }
+});
+
+function renderEmergencyContacts() {
+  var container = document.getElementById('emergencyContacts');
+  var noMsg = document.getElementById('noContactsMsg');
+  if (!container) return;
+  if (emergencyContacts.length === 0) {
+    if (noMsg) noMsg.style.display = 'block';
+    var existing = container.querySelectorAll('.emg-contact-card');
+    existing.forEach(function(el) { el.remove(); });
+    return;
+  }
+  if (noMsg) noMsg.style.display = 'none';
+  container.innerHTML = '';
+  emergencyContacts.forEach(function(c, i) {
+    var div = document.createElement('div');
+    div.className = 'emg-contact-card';
+    div.innerHTML = '<div class="emg-contact-avatar">' + c.name[0].toUpperCase() + '</div><div class="emg-contact-info"><div class="emg-contact-name">' + escHtml(c.name) + '</div><div class="emg-contact-phone">' + escHtml(c.relation || '') + ' · ' + escHtml(c.phone) + '</div></div><div class="emg-contact-btns"><a href="tel:' + escHtml(c.phone) + '" class="emg-cta">Call</a><button class="emg-cdel" onclick="deleteContact(' + i + ')">Del</button></div>';
+    container.appendChild(div);
+  });
+}
+
+function deleteContact(i) {
+  emergencyContacts.splice(i, 1);
+  try { localStorage.setItem('vhc_emergency_contacts', JSON.stringify(emergencyContacts)); } catch {}
+  renderEmergencyContacts();
+}
+
+function showAddContactModal() {
+  showModal('Add Emergency Contact',
+    '<div class="form-group"><label class="form-label">Name *</label><input class="form-input" id="ecName" placeholder="e.g. Mom"></div>' +
+    '<div class="form-group"><label class="form-label">Phone *</label><input class="form-input" id="ecPhone" type="tel" placeholder="e.g. +7 700 123 4567"></div>' +
+    '<div class="form-group"><label class="form-label">Relation</label><input class="form-input" id="ecRelation" placeholder="e.g. Mother, Doctor"></div>' +
+    '<div style="display:flex;gap:10px;justify-content:flex-end;margin-top:6px;"><button class="btn-sec" onclick="closeModal()">Cancel</button><button class="btn-primary" onclick="saveContact()">Add Contact</button></div>'
+  );
+}
+
+function saveContact() {
+  var name = document.getElementById('ecName').value.trim();
+  var phone = document.getElementById('ecPhone').value.trim();
+  var rel = document.getElementById('ecRelation').value.trim();
+  if (!name || !phone) { toast('Name and phone are required', 'error'); return; }
+  emergencyContacts.push({ name: name, phone: phone, relation: rel });
+  try { localStorage.setItem('vhc_emergency_contacts', JSON.stringify(emergencyContacts)); } catch {}
+  closeModal();
+  toast('Contact added!', 'success');
+  renderEmergencyContacts();
+}
+
+function toggleFirstAid(el) {
+  var body = el.querySelector('.firstaid-body');
+  if (body) body.style.display = body.style.display === 'none' ? 'block' : 'none';
+}
+
+// Initialize emergency contacts on load
+document.addEventListener('DOMContentLoaded', function() { renderEmergencyContacts(); });
+
+
   showModal('Device Setup Guide',
     '<div style="line-height:1.7;font-size:14px;">' +
     '<div style="margin-bottom:16px;">' +
